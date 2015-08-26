@@ -25,7 +25,6 @@ public class Player {
         }
         feetAnimation=new Animation(0.1f, feet[0], feet[1], feet[2]);
         feetStateTime=0f;
-        System.out.println(loc);
     }
 
     public void draw(SpriteBatch batch){
