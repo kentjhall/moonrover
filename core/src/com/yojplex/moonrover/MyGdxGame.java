@@ -9,10 +9,13 @@ import com.yojplex.moonrover.screens.GameScreen;
 public class MyGdxGame extends Game {
 	private SpriteBatch batch;
 	public static float masterScale;
+	private GameScreen gameScreen;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		gameScreen=new GameScreen(batch);
+
 		if (Gdx.graphics.getHeight()<750){
 			masterScale=0.55f;
 		}
@@ -23,7 +26,7 @@ public class MyGdxGame extends Game {
 			masterScale=1f;
 		}
 
-		setScreen(new GameScreen(batch));
+		setScreen(gameScreen);
 	}
 
 	@Override
@@ -34,5 +37,6 @@ public class MyGdxGame extends Game {
     @Override
     public void dispose(){
         batch.dispose();
+		gameScreen.dispose();
     }
 }

@@ -18,7 +18,7 @@ public class GameScreen implements Screen{
 
     public GameScreen(SpriteBatch batch){
         this.batch=batch;
-        player=new Player(new Vector2(50*MyGdxGame.masterScale, 0));
+        player=new Player(new Vector2(100*MyGdxGame.masterScale, 0));
     }
 
     @Override
@@ -57,5 +57,6 @@ public class GameScreen implements Screen{
 
     @Override
     public void dispose() {
+        player.dispose();
     }
 }
