@@ -14,7 +14,6 @@ public class MyGdxGame extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		gameScreen=new GameScreen(batch);
 
 		if (Gdx.graphics.getHeight()<750){
 			masterScale=0.55f;
@@ -26,7 +25,8 @@ public class MyGdxGame extends Game {
 			masterScale=1f;
 		}
 
-		setScreen(gameScreen);
+        gameScreen=new GameScreen(batch);
+        setScreen(gameScreen);
 	}
 
 	@Override

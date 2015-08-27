@@ -1,12 +1,15 @@
 package com.yojplex.moonrover;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import com.yojplex.moonrover.screens.GameScreen;
 
 /**
  * Created by Kent on 8/26/2015.
  */
 public class MyGestureListener implements GestureDetector.GestureListener{
+
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
         return false;
@@ -14,6 +17,7 @@ public class MyGestureListener implements GestureDetector.GestureListener{
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
+        GameScreen.getPlayer().setMakeLaser(true);
         return false;
     }
 
@@ -24,11 +28,19 @@ public class MyGestureListener implements GestureDetector.GestureListener{
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
-        if (velocityY>0){
-            System.out.println("down");
+        if (velocityY>20){
+            if (GameScreen.getPlayer().getJumping()) {
+                GameScreen.getPlayer().setJumpDone(true);
+                GameScreen.getPlayer().setJumpClimax(true);
+                GameScreen.getPlayer().setVel(GameScreen.getPlayer().getInitVel() * 2);
+                GameScreen.getPlayer().setPlayBodyShrinkAnimation(true);
+            }
+            else{
+                GameScreen.getPlayer().setPlayBodyShrinkAnimation(true);
+            }
         }
-        else if (velocityY<0){
-            System.out.println("up");
+        else if (velocityY<20 && !GameScreen.getPlayer().getJumping()){
+            GameScreen.getPlayer().setJumping(true);
         }
         return false;
     }

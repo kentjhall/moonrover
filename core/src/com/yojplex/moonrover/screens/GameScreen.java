@@ -13,12 +13,12 @@ import com.yojplex.moonrover.Player;
  * Created by Kent on 8/25/2015.
  */
 public class GameScreen implements Screen{
-    SpriteBatch batch;
-    Player player;
+    private static SpriteBatch batch;
+    private static Player player;
 
     public GameScreen(SpriteBatch batch){
         this.batch=batch;
-        player=new Player(new Vector2(100*MyGdxGame.masterScale, 0));
+        player=new Player(new Vector2(100*MyGdxGame.masterScale, 0*MyGdxGame.masterScale));
     }
 
     @Override
@@ -58,5 +58,9 @@ public class GameScreen implements Screen{
     @Override
     public void dispose() {
         player.dispose();
+    }
+
+    public static Player getPlayer(){
+        return player;
     }
 }
