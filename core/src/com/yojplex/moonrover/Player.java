@@ -67,22 +67,10 @@ public class Player {
     }
 
     public void draw(SpriteBatch batch){
-        if (!playBodyShrinkAnimation) {
-            batch.draw(body, loc.x, loc.y + 108 * MyGdxGame.masterScale, body.getTextureData().getWidth() * 12 * MyGdxGame.masterScale, body.getTextureData().getHeight() * 12 * MyGdxGame.masterScale);
-        }
-        playFeetAnimation(batch);
-        if (jumping){
-            jump();
-        }
-        if (playBodyShrinkAnimation){
-            playShrinkAnimation(batch);
-        }
-
         if (makeLaser){
             shootLaser(batch);
-            makeLaser=false;
+            makeLaser = false;
         }
-
         for (Laser laser:lasers){
             laser.draw(batch);
             if (laser.getLoc().x > Gdx.graphics.getWidth()) {
@@ -94,6 +82,16 @@ public class Player {
             lasers.remove(integer.intValue());
         }
         lasersToRemove.clear();
+        if (!playBodyShrinkAnimation) {
+            batch.draw(body, loc.x, loc.y + 108 * MyGdxGame.masterScale, body.getTextureData().getWidth() * 12 * MyGdxGame.masterScale, body.getTextureData().getHeight() * 12 * MyGdxGame.masterScale);
+        }
+        playFeetAnimation(batch);
+        if (jumping){
+            jump();
+        }
+        if (playBodyShrinkAnimation){
+            playShrinkAnimation(batch);
+        }
     }
 
     public void playFeetAnimation(SpriteBatch batch){
@@ -114,7 +112,6 @@ public class Player {
 
     public void jump(){
         int jumpHeight=75;
-        System.out.println(vel);
         if (loc.y<initLoc.y+jumpHeight && !jumpClimax){
             jumpDone=false;
         }
@@ -145,7 +142,13 @@ public class Player {
     }
 
     public void shootLaser(SpriteBatch batch){
-        Laser laser = new Laser(new Vector2(loc.x+body.getTextureData().getWidth() * 12 * MyGdxGame.masterScale, loc.y), 40);
+        Laser laser=new Laser(new Vector2(0, 0), 0);
+        if (!playBodyShrinkAnimation) {
+            laser = new Laser(new Vector2(loc.x + body.getTextureData().getWidth() * 9 * MyGdxGame.masterScale, loc.y + (body.getTextureData().getHeight() - 19) * 12 * MyGdxGame.masterScale + feetFrame.getTexture().getTextureData().getHeight() * 12 / 2), 40);
+        }
+        else{
+            laser = new Laser(new Vector2(loc.x + bodyShrinkFrame.getTexture().getTextureData().getWidth() * 9 * MyGdxGame.masterScale, loc.y + (bodyShrinkFrame.getTexture().getTextureData().getHeight() - 19) * 12 * MyGdxGame.masterScale + feetFrame.getTexture().getTextureData().getHeight() * 12 / 2), 40);
+        }
         lasers.add(laser);
         makeLaser=false;
     }

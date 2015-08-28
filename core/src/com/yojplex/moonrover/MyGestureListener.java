@@ -28,7 +28,8 @@ public class MyGestureListener implements GestureDetector.GestureListener{
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
-        if (velocityY>20){
+        System.out.println(velocityY);
+        if (velocityY>1500){
             if (GameScreen.getPlayer().getJumping()) {
                 GameScreen.getPlayer().setJumpDone(true);
                 GameScreen.getPlayer().setJumpClimax(true);
@@ -39,7 +40,7 @@ public class MyGestureListener implements GestureDetector.GestureListener{
                 GameScreen.getPlayer().setPlayBodyShrinkAnimation(true);
             }
         }
-        else if (velocityY<20 && !GameScreen.getPlayer().getJumping()){
+        else if (velocityY<-1500 && !GameScreen.getPlayer().getJumping()){
             GameScreen.getPlayer().setJumping(true);
         }
         return false;
