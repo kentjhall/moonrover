@@ -194,4 +194,12 @@ public class Player {
     public void setMakeLaser(boolean makeLaser){
         this.makeLaser=makeLaser;
     }
+
+    public float getBodyHeight(){
+        return body.getTextureData().getHeight();
+    }
+
+    public float getFeetHeight(){
+        return feetFrame.getTexture().getTextureData().getHeight();
+    }
 }
