@@ -24,25 +24,27 @@ public class Projectile {
     public Projectile(Lane lane, float vel){
         this.vel=vel;
         object=new Texture[1];
+        object[0]=new Texture("trash.png");
+        generator=new Random();
         randObject=generator.nextInt(object.length);
 
         switch (lane){
             case TOP:
-                loc=new Vector2(Gdx.graphics.getWidth(), GameScreen.getPlayer().getFeetHeight()*12+GameScreen.getPlayer().getBodyHeight()*12);
+                loc=new Vector2(Gdx.graphics.getWidth(), GameScreen.getPlayer().getBodyHeight()*13*MyGdxGame.masterScale);
                 break;
             case MID:
-                loc=new Vector2();
+                loc=new Vector2(Gdx.graphics.getWidth(), GameScreen.getPlayer().getLocY() + (GameScreen.getPlayer().getBodyHeight() - 19) * 12 * MyGdxGame.masterScale + GameScreen.getPlayer().getFeetFrame().getTexture().getTextureData().getHeight() * 12 / 2);
                 break;
             case BOT:
-                loc=new Vector2();
+                loc=new Vector2(Gdx.graphics.getWidth(), GameScreen.getPlayer().getLocY());
                 break;
 
         }
     }
 
     public void draw(SpriteBatch batch){
-        if (loc.x<0) {
-            batch.draw(object[randObject], loc.x, loc.y);
+        if (loc.x>-100) {
+            batch.draw(object[randObject], loc.x, loc.y, object[randObject].getTextureData().getWidth()*4*MyGdxGame.masterScale, object[randObject].getTextureData().getHeight()*4*MyGdxGame.masterScale);
             loc.x-=vel;
         }
         else{
@@ -54,5 +56,9 @@ public class Projectile {
         for (int i=0; i<object.length; i++){
             object[i].dispose();
         }
+    }
+
+    public Vector2 getLoc(){
+        return loc;
     }
 }

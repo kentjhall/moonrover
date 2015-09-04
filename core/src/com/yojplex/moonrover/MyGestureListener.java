@@ -1,5 +1,6 @@
 package com.yojplex.moonrover;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
@@ -28,7 +29,6 @@ public class MyGestureListener implements GestureDetector.GestureListener{
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
-        System.out.println(velocityY);
         if (velocityY>1500){
             if (GameScreen.getPlayer().getJumping()) {
                 GameScreen.getPlayer().setJumpDone(true);
