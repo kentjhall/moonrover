@@ -37,6 +37,7 @@ public class Player {
     private ArrayList<Laser> lasers;
     private ArrayList<Integer> lasersToRemove;
     private boolean makeLaser;
+    private int hitProjectile;
 
     public Player(Vector2 loc){
         this.loc=loc;
@@ -73,6 +74,9 @@ public class Player {
         }
         for (Laser laser:lasers){
             laser.draw(batch);
+            if (laser.isHit()){
+                hitProjectile=laser.getHitProjectile();
+            }
             if (laser.getLoc().x > Gdx.graphics.getWidth()) {
                 Integer integer = Integer.valueOf(lasers.indexOf(laser));
                 lasersToRemove.add(integer);

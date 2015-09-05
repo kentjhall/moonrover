@@ -16,7 +16,6 @@ public class MyGdxGame extends Game {
 		batch = new SpriteBatch();
 
 		masterScale=(float)Gdx.graphics.getHeight()/1080f;
-		System.out.println(masterScale);
 
         gameScreen=new GameScreen(batch);
         setScreen(gameScreen);

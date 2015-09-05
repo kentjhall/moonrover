@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -27,6 +29,7 @@ public class GameScreen implements Screen{
     private long launchTime;
     private Random generator;
     private int projectileSpeed;
+    private static ArrayList<Rectangle> projectileHitBox;
 
     public GameScreen(SpriteBatch batch){
         this.batch=batch;
@@ -35,6 +38,7 @@ public class GameScreen implements Screen{
         makeProjectile=false;
         projectiles=new ArrayList<Projectile>();
         projectilesToRemove=new ArrayList<Integer>();
+        projectileHitBox=new ArrayList<Rectangle>();
         launchTime= TimeUtils.nanoTime();
         generator=new Random();
         projectileSpeed=20;
@@ -69,8 +73,9 @@ public class GameScreen implements Screen{
             }
         }
         for (Integer integer:projectilesToRemove){
-            //remove projectiles in array because off screen
+            //remove projectiles and hitboxes in arrays because off screen
             projectiles.remove(integer.intValue());
+            projectileHitBox.remove(integer.intValue());
         }
         projectilesToRemove.clear();
         batch.end();
@@ -116,12 +121,18 @@ public class GameScreen implements Screen{
                 projectile=new Projectile(Projectile.Lane.BOT, projectileSpeed);
                 break;
         }
-        //add projectile to projectile array
+        //add projectile to projectile array and projectile's hitbox to hitbox array
         projectiles.add(projectile);
+        projectileHitBox.add(projectile.getHitBox());
         makeProjectile=false;
     }
 
     public static Player getPlayer(){
         return player;
+    }
+
+    public static ArrayList<Rectangle> getProjectileHitBox(){
+        return projectileHitBox;
+
     }
 }
