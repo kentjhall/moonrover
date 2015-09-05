@@ -28,10 +28,11 @@ public class Laser {
         width=laser.getTextureData().getWidth() * 6 * MyGdxGame.masterScale;
         height=laser.getTextureData().getHeight() * 6 * MyGdxGame.masterScale;
         hitBox=new Rectangle(loc.x, loc.y, width, height);
+        hit=false;
     }
 
     public void draw(SpriteBatch batch){
-        if (loc.x<Gdx.graphics.getWidth()) {
+        if (loc.x<Gdx.graphics.getWidth() && !hit) {
             batch.draw(laser, loc.x, loc.y, width, height);
             loc.x += vel;
             hitBox.setPosition(loc);
@@ -45,6 +46,7 @@ public class Laser {
             //checks if overlap with laser hitbox
             if (Intersector.overlaps(this.hitBox, hitBox)){
                 hit=true;
+                //gets the index of the hit projectile
                 hitProjectile=GameScreen.getProjectileHitBox().indexOf(hitBox);
             }
         }
@@ -52,6 +54,7 @@ public class Laser {
 
     public void dispose(){
         laser.dispose();
+        hitBox.setPosition(-100, -100);
     }
 
     public Vector2 getLoc(){

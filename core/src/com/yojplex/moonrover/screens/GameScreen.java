@@ -30,6 +30,7 @@ public class GameScreen implements Screen{
     private Random generator;
     private int projectileSpeed;
     private static ArrayList<Rectangle> projectileHitBox;
+    private int curHitProjectile;
 
     public GameScreen(SpriteBatch batch){
         this.batch=batch;
@@ -42,6 +43,7 @@ public class GameScreen implements Screen{
         launchTime= TimeUtils.nanoTime();
         generator=new Random();
         projectileSpeed=20;
+        curHitProjectile=player.getHitProjectile();
     }
 
     @Override
@@ -70,6 +72,10 @@ public class GameScreen implements Screen{
                 //add projectiles that are off screen to "remove" array
                 Integer integer=Integer.valueOf(projectiles.indexOf(projectile));
                 projectilesToRemove.add(integer);
+            }
+            if (player.getHitProjectile()==projectiles.indexOf(projectile)){
+                projectile.setHit(true);
+                player.setHitProjectile(-1);
             }
         }
         for (Integer integer:projectilesToRemove){

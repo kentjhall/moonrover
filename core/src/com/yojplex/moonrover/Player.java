@@ -66,6 +66,7 @@ public class Player {
         lasers=new ArrayList<Laser>();
         lasersToRemove=new ArrayList<Integer>();
         makeLaser=false;
+        hitProjectile=-1;
     }
 
     public void draw(SpriteBatch batch){
@@ -75,6 +76,7 @@ public class Player {
         for (Laser laser:lasers){
             laser.draw(batch);
             if (laser.isHit()){
+                //gets the index of the hit projectile
                 hitProjectile=laser.getHitProjectile();
             }
             if (laser.getLoc().x > Gdx.graphics.getWidth()) {
@@ -217,5 +219,13 @@ public class Player {
 
     public TextureRegion getFeetFrame(){
         return feetFrame;
+    }
+
+    public int getHitProjectile(){
+        return hitProjectile;
+    }
+
+    public void setHitProjectile(int hitProjectile){
+        this.hitProjectile=hitProjectile;
     }
 }

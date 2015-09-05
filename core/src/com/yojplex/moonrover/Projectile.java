@@ -71,6 +71,7 @@ public class Projectile {
         for (int i=0; i<object.length; i++){
             object[i].dispose();
         }
+        hitBox.setPosition(-100, -100);
     }
 
     public Vector2 getLoc(){
@@ -79,5 +80,9 @@ public class Projectile {
 
     public Rectangle getHitBox(){
         return hitBox;
+    }
+
+    public void setHit(boolean hit){
+        this.hit=hit;
     }
 }
