@@ -81,7 +81,7 @@ public class Player {
         bodyWidth=body.getTextureData().getWidth() * 12 * MyGdxGame.masterScale;
         bodyHeight=body.getTextureData().getHeight() * 12 * MyGdxGame.masterScale;
         hitBox=new Rectangle(loc.x, loc.y, bodyWidth*0.58f, feetHeight+bodyHeight);
-        midHitBox=new Rectangle(loc.x, loc.y, bodyWidth, bodyHeight*0.3f);
+        midHitBox=new Rectangle(loc.x, loc.y+feetHeight+(bodyHeight-26*12*MyGdxGame.masterScale), bodyWidth, bodyHeight*0.3f);
     }
 
     public void draw(SpriteBatch batch){
@@ -108,8 +108,7 @@ public class Player {
         }
         lasersToRemove.clear();
         for (Rectangle hitBox: GameScreen.getProjectileHitBox()){
-            if (Intersector.overlaps(this.hitBox, hitBox)){
-                System.out.println("hit");
+            if (Intersector.overlaps(this.hitBox, hitBox) || Intersector.overlaps(midHitBox, hitBox)){
                 hitProjectile=GameScreen.getProjectileHitBox().indexOf(hitBox);
             }
         }
@@ -139,6 +138,7 @@ public class Player {
         bodyShrinkHeight=bodyShrinkFrame.getTexture().getTextureData().getHeight() * 12 * MyGdxGame.masterScale;
         batch.draw(bodyShrinkFrame, loc.x, loc.y + 108 * MyGdxGame.masterScale, bodyWidth, bodyShrinkHeight);
         hitBox.setHeight(feetHeight + bodyShrinkHeight);
+        midHitBox.setPosition(loc.x, loc.y+feetHeight+(bodyShrinkHeight-26*12*MyGdxGame.masterScale));
         if (bodyShrinkAnimation.isAnimationFinished(bodyShrinkStateTime)){
             bodyShrinkStateTime=0f;
             hitBox.setHeight(feetHeight+bodyHeight);
