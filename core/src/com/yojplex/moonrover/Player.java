@@ -7,7 +7,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.yojplex.moonrover.screens.GameScreen;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -38,6 +42,13 @@ public class Player {
     private ArrayList<Integer> lasersToRemove;
     private boolean makeLaser;
     private int hitProjectile;
+    private float bodyWidth;
+    private float bodyHeight;
+    private float bodyShrinkHeight;
+    private float feetWidth;
+    private float feetHeight;
+    private Rectangle hitBox;
+    private Rectangle midHitBox;
 
     public Player(Vector2 loc){
         this.loc=loc;
@@ -49,7 +60,7 @@ public class Player {
         for (int i=0; i<bodyShrink.length; i++){
             bodyShrink[i]=new TextureRegion(new Texture("player/body/bodyshrink"+(i+1)+".png"));
         }
-        bodyShrinkAnimation=new Animation(0.07f, bodyShrink[0], bodyShrink[1], bodyShrink[2], bodyShrink[3], bodyShrink[2], bodyShrink[1], bodyShrink[0]);
+        bodyShrinkAnimation=new Animation(0.07f, bodyShrink[0], bodyShrink[1], bodyShrink[2], bodyShrink[3], bodyShrink[3], bodyShrink[3], bodyShrink[3], bodyShrink[3],  bodyShrink[2], bodyShrink[1], bodyShrink[0]);
         bodyShrinkStateTime=0f;
         feet=new TextureRegion[3];
         for (int i=0; i<feet.length; i++){
@@ -67,12 +78,20 @@ public class Player {
         lasersToRemove=new ArrayList<Integer>();
         makeLaser=false;
         hitProjectile=-1;
+        bodyWidth=body.getTextureData().getWidth() * 12 * MyGdxGame.masterScale;
+        bodyHeight=body.getTextureData().getHeight() * 12 * MyGdxGame.masterScale;
+        hitBox=new Rectangle(loc.x, loc.y, bodyWidth*0.58f, feetHeight+bodyHeight);
+        midHitBox=new Rectangle(loc.x, loc.y, bodyWidth, bodyHeight*0.3f);
     }
 
     public void draw(SpriteBatch batch){
         if (makeLaser){
             shootLaser();
         }
+        if (!playBodyShrinkAnimation){
+            hitBox.setHeight(feetHeight+bodyHeight);
+        }
+        hitBox.setPosition(loc);
         for (Laser laser:lasers){
             laser.draw(batch);
             if (laser.isHit()){
@@ -88,8 +107,14 @@ public class Player {
             lasers.remove(integer.intValue());
         }
         lasersToRemove.clear();
+        for (Rectangle hitBox: GameScreen.getProjectileHitBox()){
+            if (Intersector.overlaps(this.hitBox, hitBox)){
+                System.out.println("hit");
+                hitProjectile=GameScreen.getProjectileHitBox().indexOf(hitBox);
+            }
+        }
         if (!playBodyShrinkAnimation) {
-            batch.draw(body, loc.x, loc.y + 108 * MyGdxGame.masterScale, body.getTextureData().getWidth() * 12 * MyGdxGame.masterScale, body.getTextureData().getHeight() * 12 * MyGdxGame.masterScale);
+            batch.draw(body, loc.x, loc.y + 108 * MyGdxGame.masterScale, bodyWidth, bodyHeight);
         }
         playFeetAnimation(batch);
         if (jumping){
@@ -103,15 +128,20 @@ public class Player {
     public void playFeetAnimation(SpriteBatch batch){
         feetStateTime+= Gdx.graphics.getDeltaTime();
         feetFrame=feetAnimation.getKeyFrame(feetStateTime, true);
-        batch.draw(feetFrame, loc.x, loc.y, feetFrame.getTexture().getTextureData().getWidth()* 12 * MyGdxGame.masterScale, feetFrame.getTexture().getTextureData().getHeight()* 12 * MyGdxGame.masterScale);
+        feetWidth=feetFrame.getTexture().getTextureData().getWidth()* 12 * MyGdxGame.masterScale;
+        feetHeight=feetFrame.getTexture().getTextureData().getHeight()* 12 * MyGdxGame.masterScale;
+        batch.draw(feetFrame, loc.x, loc.y, feetWidth, feetHeight);
     }
 
     public void playShrinkAnimation(SpriteBatch batch){
         bodyShrinkStateTime+=Gdx.graphics.getDeltaTime();
         bodyShrinkFrame=bodyShrinkAnimation.getKeyFrame(bodyShrinkStateTime, false);
-        batch.draw(bodyShrinkFrame, loc.x, loc.y + 108 * MyGdxGame.masterScale, bodyShrinkFrame.getTexture().getTextureData().getWidth() * 12 * MyGdxGame.masterScale, bodyShrinkFrame.getTexture().getTextureData().getHeight() * 12 * MyGdxGame.masterScale);
+        bodyShrinkHeight=bodyShrinkFrame.getTexture().getTextureData().getHeight() * 12 * MyGdxGame.masterScale;
+        batch.draw(bodyShrinkFrame, loc.x, loc.y + 108 * MyGdxGame.masterScale, bodyWidth, bodyShrinkHeight);
+        hitBox.setHeight(feetHeight + bodyShrinkHeight);
         if (bodyShrinkAnimation.isAnimationFinished(bodyShrinkStateTime)){
             bodyShrinkStateTime=0f;
+            hitBox.setHeight(feetHeight+bodyHeight);
             playBodyShrinkAnimation=false;
         }
     }
@@ -227,5 +257,9 @@ public class Player {
 
     public void setHitProjectile(int hitProjectile){
         this.hitProjectile=hitProjectile;
+    }
+
+    public Rectangle getHitBox(){
+        return hitBox;
     }
 }
