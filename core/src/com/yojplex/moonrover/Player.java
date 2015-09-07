@@ -81,7 +81,7 @@ public class Player {
         bodyWidth=body.getTextureData().getWidth() * 12 * MyGdxGame.masterScale;
         bodyHeight=body.getTextureData().getHeight() * 12 * MyGdxGame.masterScale;
         hitBox=new Rectangle(loc.x, loc.y, bodyWidth*0.58f, feetHeight+bodyHeight);
-        midHitBox=new Rectangle(loc.x, loc.y+feetHeight+(bodyHeight-26*12*MyGdxGame.masterScale), bodyWidth, bodyHeight*0.3f);
+        midHitBox=new Rectangle(loc.x, loc.y+feetHeight+(bodyHeight-26*12*MyGdxGame.masterScale), bodyWidth, bodyHeight*0.2f);
     }
 
     public void draw(SpriteBatch batch){
