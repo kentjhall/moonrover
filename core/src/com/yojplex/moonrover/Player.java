@@ -33,11 +33,16 @@ public class Player {
     private TextureRegion[] feet;
     private TextureRegion feetFrame;
     private float feetStateTime;
+    private Animation explosionAnimation;
+    private TextureRegion[]explosion;
+    private TextureRegion explosionFrame;
+    private float explosionStateTime;
     private MyGestureListener gestureListener;
     private boolean jumping;
     private boolean jumpClimax;
     private boolean jumpDone;
     private boolean playBodyShrinkAnimation;
+    private boolean playExplosionAnimation;
     private ArrayList<Laser> lasers;
     private ArrayList<Integer> lasersToRemove;
     private boolean makeLaser;
@@ -68,12 +73,19 @@ public class Player {
         }
         feetAnimation=new Animation(0.1f, feet[0], feet[1], feet[2]);
         feetStateTime=0f;
+        explosion=new TextureRegion[6];
+        for (int i=0; i<explosion.length; i++){
+            explosion[i]=new TextureRegion(new Texture("explosion/explosion"+(i+1)+".png"));
+        }
+        explosionAnimation=new Animation(0.1f, explosion[0], explosion[1], explosion[2], explosion[3], explosion[4], explosion[5]);
+        explosionStateTime=0f;
         gestureListener=new MyGestureListener();
         Gdx.input.setInputProcessor(new GestureDetector(gestureListener));
         jumping=false;
         jumpClimax=false;
         jumpDone=false;
         playBodyShrinkAnimation=false;
+        playExplosionAnimation=false;
         lasers=new ArrayList<Laser>();
         lasersToRemove=new ArrayList<Integer>();
         makeLaser=false;
@@ -122,6 +134,9 @@ public class Player {
         if (playBodyShrinkAnimation){
             playShrinkAnimation(batch);
         }
+        if (playExplosionAnimation){
+            playExplosionAnimation(batch, new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2));
+        }
     }
 
     public void playFeetAnimation(SpriteBatch batch){
@@ -138,11 +153,21 @@ public class Player {
         bodyShrinkHeight=bodyShrinkFrame.getTexture().getTextureData().getHeight() * 12 * MyGdxGame.masterScale;
         batch.draw(bodyShrinkFrame, loc.x, loc.y + 108 * MyGdxGame.masterScale, bodyWidth, bodyShrinkHeight);
         hitBox.setHeight(feetHeight + bodyShrinkHeight);
-        midHitBox.setPosition(loc.x, loc.y+feetHeight+(bodyShrinkHeight-26*12*MyGdxGame.masterScale));
+        midHitBox.setPosition(loc.x, loc.y + feetHeight + (bodyShrinkHeight - 26 * 12 * MyGdxGame.masterScale));
         if (bodyShrinkAnimation.isAnimationFinished(bodyShrinkStateTime)){
             bodyShrinkStateTime=0f;
             hitBox.setHeight(feetHeight+bodyHeight);
             playBodyShrinkAnimation=false;
+        }
+    }
+
+    public void playExplosionAnimation(SpriteBatch batch, Vector2 loc){
+        explosionStateTime+=Gdx.graphics.getDeltaTime();
+        explosionFrame=explosionAnimation.getKeyFrame(explosionStateTime, false);
+        batch.draw(explosionFrame, loc.x, loc.y, explosionFrame.getTexture().getTextureData().getWidth()*5, explosionFrame.getTexture().getTextureData().getHeight()*5);
+        if (explosionAnimation.isAnimationFinished(explosionStateTime)){
+            explosionStateTime=0f;
+            playExplosionAnimation=false;
         }
     }
 
