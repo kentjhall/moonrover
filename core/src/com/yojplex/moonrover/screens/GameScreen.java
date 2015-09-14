@@ -3,6 +3,7 @@ package com.yojplex.moonrover.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
@@ -30,7 +31,7 @@ public class GameScreen implements Screen{
     private Random generator;
     private int projectileSpeed;
     private static ArrayList<Rectangle> projectileHitBox;
-    private int curHitProjectile;
+    private Texture ground;
 
     public GameScreen(SpriteBatch batch){
         this.batch=batch;
@@ -43,7 +44,7 @@ public class GameScreen implements Screen{
         launchTime= TimeUtils.nanoTime();
         generator=new Random();
         projectileSpeed=20;
-        curHitProjectile=player.getHitProjectile();
+        ground=new Texture("gray.png");
     }
 
     @Override

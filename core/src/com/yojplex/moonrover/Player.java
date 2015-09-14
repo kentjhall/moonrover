@@ -54,6 +54,7 @@ public class Player {
     private float feetHeight;
     private Rectangle hitBox;
     private Rectangle midHitBox;
+    private Vector2 explosionLoc;
 
     public Player(Vector2 loc){
         this.loc=loc;
@@ -93,7 +94,8 @@ public class Player {
         bodyWidth=body.getTextureData().getWidth() * 12 * MyGdxGame.masterScale;
         bodyHeight=body.getTextureData().getHeight() * 12 * MyGdxGame.masterScale;
         hitBox=new Rectangle(loc.x, loc.y, bodyWidth*0.58f, feetHeight+bodyHeight);
-        midHitBox=new Rectangle(loc.x, loc.y+feetHeight+(bodyHeight-26*12*MyGdxGame.masterScale), bodyWidth, bodyHeight*0.2f);
+        midHitBox=new Rectangle(loc.x, loc.y+feetHeight+(bodyHeight-22*12*MyGdxGame.masterScale), bodyWidth, bodyHeight*0.2f);
+        explosionLoc=new Vector2();
     }
 
     public void draw(SpriteBatch batch){
@@ -122,12 +124,14 @@ public class Player {
         for (Rectangle hitBox: GameScreen.getProjectileHitBox()){
             if (Intersector.overlaps(this.hitBox, hitBox) || Intersector.overlaps(midHitBox, hitBox)){
                 hitProjectile=GameScreen.getProjectileHitBox().indexOf(hitBox);
+                explosionLoc.set(hitBox.getX(), hitBox.getY());
+                playExplosionAnimation=true;
             }
         }
+        playFeetAnimation(batch);
         if (!playBodyShrinkAnimation) {
             batch.draw(body, loc.x, loc.y + 108 * MyGdxGame.masterScale, bodyWidth, bodyHeight);
         }
-        playFeetAnimation(batch);
         if (jumping){
             jump();
         }
@@ -135,12 +139,14 @@ public class Player {
             playShrinkAnimation(batch);
         }
         if (playExplosionAnimation){
-            playExplosionAnimation(batch, new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2));
+            playExplosionAnimation(batch, explosionLoc);
         }
     }
 
     public void playFeetAnimation(SpriteBatch batch){
-        feetStateTime+= Gdx.graphics.getDeltaTime();
+        if (!jumping) {
+            feetStateTime += Gdx.graphics.getDeltaTime();
+        }
         feetFrame=feetAnimation.getKeyFrame(feetStateTime, true);
         feetWidth=feetFrame.getTexture().getTextureData().getWidth()* 12 * MyGdxGame.masterScale;
         feetHeight=feetFrame.getTexture().getTextureData().getHeight()* 12 * MyGdxGame.masterScale;
@@ -157,12 +163,13 @@ public class Player {
         if (bodyShrinkAnimation.isAnimationFinished(bodyShrinkStateTime)){
             bodyShrinkStateTime=0f;
             hitBox.setHeight(feetHeight+bodyHeight);
+            midHitBox.setPosition(loc.x, loc.y+feetHeight+(bodyHeight-22*12*MyGdxGame.masterScale));
             playBodyShrinkAnimation=false;
         }
     }
 
     public void playExplosionAnimation(SpriteBatch batch, Vector2 loc){
-        explosionStateTime+=Gdx.graphics.getDeltaTime();
+        explosionStateTime += Gdx.graphics.getDeltaTime();
         explosionFrame=explosionAnimation.getKeyFrame(explosionStateTime, false);
         batch.draw(explosionFrame, loc.x, loc.y, explosionFrame.getTexture().getTextureData().getWidth()*5, explosionFrame.getTexture().getTextureData().getHeight()*5);
         if (explosionAnimation.isAnimationFinished(explosionStateTime)){
@@ -172,7 +179,7 @@ public class Player {
     }
 
     public void jump(){
-        int jumpHeight=75;
+        int jumpHeight=130;
         if (loc.y<initLoc.y+jumpHeight && !jumpClimax){
             jumpDone=false;
         }
